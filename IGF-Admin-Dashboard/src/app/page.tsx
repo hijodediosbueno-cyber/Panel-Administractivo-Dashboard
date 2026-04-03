@@ -172,65 +172,69 @@ export default function DashboardPage() {
 
       {/* Resumen General - Fila 1: Usuarios y operaciones */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">
-                Total Usuarios
-              </p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
-                {stats?.totalUsers || 0}
-              </p>
-              <p className="text-xs text-blue-500 mt-1">Usuarios registrados</p>
-            </div>
-            <div className="p-3 bg-blue-50 rounded-xl">
-              <svg
-                className="w-8 h-8 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+        <Link href="/users" className="group block">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 cursor-pointer transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Total Usuarios
+                </p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {stats?.totalUsers || 0}
+                </p>
+                <p className="text-xs text-blue-500 mt-1 group-hover:underline">Ver usuarios →</p>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-xl group-hover:bg-blue-500 transition-colors">
+                <svg
+                  className="w-8 h-8 text-blue-500 group-hover:text-white transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">
-                Depósitos Pendientes
-              </p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
-                {stats?.pendingDeposits || 0}
-              </p>
-              <p className="text-xs text-orange-500 mt-1">
-                Esperando aprobación
-              </p>
-            </div>
-            <div className="p-3 bg-orange-50 rounded-xl">
-              <svg
-                className="w-8 h-8 text-orange-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+        <Link href="/transactions" className="group block">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-orange-200 cursor-pointer transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Depósitos Pendientes
+                </p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">
+                  {stats?.pendingDeposits || 0}
+                </p>
+                <p className="text-xs text-orange-500 mt-1 group-hover:underline">
+                  Ver transacciones →
+                </p>
+              </div>
+              <div className="p-3 bg-orange-50 rounded-xl group-hover:bg-orange-500 transition-colors">
+                <svg
+                  className="w-8 h-8 text-orange-500 group-hover:text-white transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Resumen Financiero - Fila 2 */}
@@ -250,63 +254,71 @@ export default function DashboardPage() {
           </span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-green-500">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-              Total Depositado
-            </p>
-            <p className="text-2xl font-bold text-green-600 mt-2">
-              RD$
-              {(stats?.totalDeposited || 0).toLocaleString("es-DO", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">Depósitos aprobados</p>
-          </div>
+          <Link href="/transactions" className="group block">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-green-500 hover:shadow-md hover:border-green-300 cursor-pointer transition-all duration-200">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Total Depositado
+              </p>
+              <p className="text-2xl font-bold text-green-600 mt-2">
+                RD$
+                {(stats?.totalDeposited || 0).toLocaleString("es-DO", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+              <p className="text-xs text-gray-400 mt-1 group-hover:text-green-500 group-hover:underline">Ver transacciones →</p>
+            </div>
+          </Link>
 
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-orange-500">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-              Total Retirado
-            </p>
-            <p className="text-2xl font-bold text-orange-600 mt-2">
-              RD$
-              {(stats?.totalWithdrawn || 0).toLocaleString("es-DO", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">Retiros completados</p>
-          </div>
+          <Link href="/wallets" className="group block">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-orange-500 hover:shadow-md hover:border-orange-300 cursor-pointer transition-all duration-200">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                Total Retirado
+              </p>
+              <p className="text-2xl font-bold text-orange-600 mt-2">
+                RD$
+                {(stats?.totalWithdrawn || 0).toLocaleString("es-DO", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+              <p className="text-xs text-gray-400 mt-1 group-hover:text-orange-500 group-hover:underline">Ver billeteras →</p>
+            </div>
+          </Link>
 
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl shadow-sm border border-blue-200 border-l-4 border-l-blue-500">
-            <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
-              Balance del Sistema
-            </p>
-            <p className="text-2xl font-bold text-blue-600 mt-2">
-              RD$
-              {(stats?.systemBalance || 0).toLocaleString("es-DO", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
-            <p className="text-xs text-blue-400 mt-1">
-              ⚡ Acumulado en tiempo real
-            </p>
-          </div>
+          <Link href="/wallets" className="group block">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl shadow-sm border border-blue-200 border-l-4 border-l-blue-500 hover:shadow-md cursor-pointer transition-all duration-200">
+              <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
+                Balance del Sistema
+              </p>
+              <p className="text-2xl font-bold text-blue-600 mt-2">
+                RD$
+                {(stats?.systemBalance || 0).toLocaleString("es-DO", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+              <p className="text-xs text-blue-400 mt-1 group-hover:underline">
+                ⚡ Ver billeteras →
+              </p>
+            </div>
+          </Link>
 
-          <div className="bg-gradient-to-br from-red-50 to-red-100 p-5 rounded-xl shadow-sm border border-red-200 border-l-4 border-l-red-500">
-            <p className="text-xs font-medium text-red-500 uppercase tracking-wide">
-              Total Perdido
-            </p>
-            <p className="text-2xl font-bold text-red-600 mt-2">
-              RD$
-              {(stats?.totalLost || 0).toLocaleString("es-DO", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
-            <p className="text-xs text-red-400 mt-1">Perdido por clientes</p>
-          </div>
+          <Link href="/wallets" className="group block">
+            <div className="bg-gradient-to-br from-red-50 to-red-100 p-5 rounded-xl shadow-sm border border-red-200 border-l-4 border-l-red-500 hover:shadow-md cursor-pointer transition-all duration-200">
+              <p className="text-xs font-medium text-red-500 uppercase tracking-wide">
+                Total Perdido
+              </p>
+              <p className="text-2xl font-bold text-red-600 mt-2">
+                RD$
+                {(stats?.totalLost || 0).toLocaleString("es-DO", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+              <p className="text-xs text-red-400 mt-1 group-hover:underline">Ver billeteras →</p>
+            </div>
+          </Link>
         </div>
       </div>
 
