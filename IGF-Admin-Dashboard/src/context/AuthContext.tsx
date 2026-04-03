@@ -1,10 +1,16 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { useRouter } from "next/navigation";
 
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "IGF@admin2026";
+const ADMIN_USER = "peraltavasquez100@gmail.com";
+const ADMIN_PASS = "Nileve07*";
 const AUTH_KEY = "igf_admin_auth";
 
 interface AuthContextType {

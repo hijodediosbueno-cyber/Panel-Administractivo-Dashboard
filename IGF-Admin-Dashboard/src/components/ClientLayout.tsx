@@ -4,7 +4,11 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -29,24 +33,42 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
-              <a href="/" className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+              <a
+                href="/"
+                className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+              >
                 IGF Football Admin
               </a>
 
               <div className="hidden sm:flex space-x-4">
-                <a href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Dashboard
                 </a>
-                <a href="/users" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/users"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Usuarios
                 </a>
-                <a href="/apuestas" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/apuestas"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   🎯 Apuestas
                 </a>
-                <a href="/transactions" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/transactions"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Transacciones
                 </a>
-                <a href="/wallets" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/wallets"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Wallets
                 </a>
               </div>
@@ -72,9 +94,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       {/* Contenido principal */}
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-6">
-          {children}
-        </div>
+        <div className="space-y-6">{children}</div>
       </main>
 
       {/* Footer */}
