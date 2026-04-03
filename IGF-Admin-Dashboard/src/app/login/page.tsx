@@ -125,7 +125,8 @@ export default function LoginPage() {
             style={{
               background: "linear-gradient(135deg, #1a6e2e 0%, #0d4a1a 100%)",
               border: "3px solid rgba(255,255,255,0.25)",
-              boxShadow: "0 0 40px rgba(0,200,0,0.3), 0 8px 32px rgba(0,0,0,0.5)",
+              boxShadow:
+                "0 0 40px rgba(0,200,0,0.3), 0 8px 32px rgba(0,0,0,0.5)",
             }}
           >
             <span className="text-4xl">⚽</span>
@@ -136,7 +137,10 @@ export default function LoginPage() {
           >
             IGF Football
           </h1>
-          <p className="text-sm font-medium" style={{ color: "rgba(180,255,180,0.7)" }}>
+          <p
+            className="text-sm font-medium"
+            style={{ color: "rgba(180,255,180,0.7)" }}
+          >
             Panel Administrativo
           </p>
         </div>
@@ -156,7 +160,10 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: "rgba(200,255,200,0.85)" }}>
+              <label
+                className="block text-sm font-medium mb-1"
+                style={{ color: "rgba(200,255,200,0.85)" }}
+              >
                 Correo
               </label>
               <input
@@ -175,7 +182,10 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: "rgba(200,255,200,0.85)" }}>
+              <label
+                className="block text-sm font-medium mb-1"
+                style={{ color: "rgba(200,255,200,0.85)" }}
+              >
                 Contraseña
               </label>
               <input

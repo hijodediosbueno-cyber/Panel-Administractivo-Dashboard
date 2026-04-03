@@ -50,13 +50,16 @@ export default function TransactionsPage() {
   const [historyFilter, setHistoryFilter] = useState<
     "all" | "approved" | "rejected"
   >("all");
+  const [selectedDate, setSelectedDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0],
+  );
 
   useEffect(() => {
     loadDeposits();
     if (showHistory) {
-      loadHistory();
+      loadHistory(selectedDate);
     }
-  }, [showHistory]);
+  }, [showHistory, selectedDate]);
 
   // Cerrar modal con ESC
   useEffect(() => {
@@ -106,7 +109,11 @@ export default function TransactionsPage() {
     }
   };
 
-  const loadHistory = async () => {
+  const loadHistory = async (dateStr: string) => {
+    const nextDay = new Date(dateStr + "T00:00:00");
+    nextDay.setDate(nextDay.getDate() + 1);
+    const nextDayStr = nextDay.toISOString().split("T")[0];
+
     try {
       const { data, error } = await supabaseAdmin
         .from("pending_deposits")
@@ -122,8 +129,9 @@ export default function TransactionsPage() {
         )
         .in("status", ["approved", "rejected"])
         .not("payment_method", "like", "RETIRO_%")
-        .order("updated_at", { ascending: false })
-        .limit(50); // Limitar a las últimas 50 transacciones
+        .gte("created_at", dateStr)
+        .lt("created_at", nextDayStr)
+        .order("updated_at", { ascending: false });
 
       if (error) throw error;
 
@@ -298,7 +306,6 @@ export default function TransactionsPage() {
                 status: "completed",
                 description: `Comisión ${commissionRate * 100}% (Nv.${agentLevel}) - Recarga de ${depositorName} (RD$${deposit.amount.toLocaleString()})`,
               });
-
             }
           }
         }
@@ -332,7 +339,7 @@ export default function TransactionsPage() {
       alert("Depósito aprobado exitosamente");
       await loadDeposits();
       if (showHistory) {
-        await loadHistory();
+        await loadHistory(selectedDate);
       }
     } catch (error) {
       console.error("Error in approveDeposit:", error);
@@ -375,7 +382,7 @@ export default function TransactionsPage() {
       alert("Depósito rechazado");
       await loadDeposits();
       if (showHistory) {
-        await loadHistory();
+        await loadHistory(selectedDate);
       }
     } catch (error) {
       console.error("Error rejecting deposit:", error);
@@ -446,39 +453,64 @@ export default function TransactionsPage() {
         {/* FILTROS PARA HISTORIAL - VERSIÓN 2.0 */}
         {showHistory && (
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-            <div className="flex items-center space-x-4">
-              <span className="text-sm font-medium text-blue-700">
-                🔍 Filtrar por estado:
-              </span>
-              <div className="flex space-x-2">
-                {[
-                  { key: "all", label: "Todas", icon: "📋" },
-                  { key: "approved", label: "Aprobadas", icon: "✅" },
-                  { key: "rejected", label: "Rechazadas", icon: "❌" },
-                ].map((filter) => (
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              {/* Selector de fecha */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-blue-700 whitespace-nowrap">
+                  📅 Día:
+                </label>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg border border-blue-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                />
+                {selectedDate !== new Date().toISOString().split("T")[0] && (
                   <button
-                    key={filter.key}
-                    onClick={() => setHistoryFilter(filter.key as any)}
-                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                      historyFilter === filter.key
-                        ? "bg-blue-100 text-blue-700 border border-blue-300"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
+                    onClick={() =>
+                      setSelectedDate(new Date().toISOString().split("T")[0])
+                    }
+                    className="text-xs text-blue-500 hover:text-blue-700 underline"
                   >
-                    {filter.icon} {filter.label}
+                    Hoy
                   </button>
-                ))}
+                )}
               </div>
-              <span className="text-xs text-gray-500 ml-4">
-                (
-                {
-                  historyDeposits.filter(
-                    (d) =>
-                      historyFilter === "all" || d.status === historyFilter,
-                  ).length
-                }{" "}
-                resultados)
-              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-blue-700">
+                  🔍 Estado:
+                </span>
+                <div className="flex space-x-2">
+                  {[
+                    { key: "all", label: "Todas", icon: "📋" },
+                    { key: "approved", label: "Aprobadas", icon: "✅" },
+                    { key: "rejected", label: "Rechazadas", icon: "❌" },
+                  ].map((filter) => (
+                    <button
+                      key={filter.key}
+                      onClick={() => setHistoryFilter(filter.key as any)}
+                      className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                        historyFilter === filter.key
+                          ? "bg-blue-100 text-blue-700 border border-blue-300"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      {filter.icon} {filter.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-xs text-gray-500">
+                  (
+                  {
+                    historyDeposits.filter(
+                      (d) =>
+                        historyFilter === "all" || d.status === historyFilter,
+                    ).length
+                  }{" "}
+                  resultados)
+                </span>
+              </div>
             </div>
           </div>
         )}

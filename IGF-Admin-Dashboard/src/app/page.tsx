@@ -16,9 +16,18 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   },
 });
 
+// Helper: obtener el día siguiente en formato YYYY-MM-DD
+const getNextDay = (dateStr: string): string => {
+  const d = new Date(dateStr + "T00:00:00");
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split("T")[0];
+};
+
 // Funciones administrativas
 const adminFunctions = {
-  async getStats() {
+  async getStats(dateStr: string) {
+    const nextDayStr = getNextDay(dateStr);
+
     const [
       users,
       deposits,
@@ -31,15 +40,22 @@ const adminFunctions = {
         .from("pending_deposits")
         .select("id", { count: "exact" })
         .eq("status", "pending"),
+      // Balance del sistema: SIEMPRE en tiempo real (sin filtro de fecha)
       supabaseAdmin.from("wallets").select("balance"),
+      // Depósitos aprobados EN el día seleccionado (por updated_at = cuando se aprobó)
       supabaseAdmin
         .from("pending_deposits")
         .select("amount")
-        .eq("status", "approved"),
+        .eq("status", "approved")
+        .gte("updated_at", dateStr)
+        .lt("updated_at", nextDayStr),
+      // Retiros completados EN el día seleccionado
       supabaseAdmin
         .from("withdrawals")
         .select("amount")
-        .in("status", ["completed", "approved"]),
+        .in("status", ["completed", "approved"])
+        .gte("updated_at", dateStr)
+        .lt("updated_at", nextDayStr),
     ]);
 
     const totalUsers = users.count || 0;
@@ -85,14 +101,18 @@ interface DashboardStats {
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0],
+  );
 
   useEffect(() => {
     loadStats();
-  }, []);
+  }, [selectedDate]);
 
   const loadStats = async () => {
+    setLoading(true);
     try {
-      const data = await adminFunctions.getStats();
+      const data = await adminFunctions.getStats(selectedDate);
       setStats(data);
     } catch (error) {
       console.error("Error loading stats:", error);
@@ -113,13 +133,41 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
-        <h1 className="text-3xl font-bold mb-1">Dashboard Administrativo</h1>
-        <p className="text-blue-200 text-sm">
-          Gestiona usuarios y transacciones de IGF Football en tiempo real
-        </p>
-        <p className="mt-3 text-xs text-blue-300">
-          Última actualización: {new Date().toLocaleString("es-ES")}
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-1">
+              Dashboard Administrativo
+            </h1>
+            <p className="text-blue-200 text-sm">
+              Gestiona usuarios y transacciones de IGF Football en tiempo real
+            </p>
+            <p className="mt-3 text-xs text-blue-300">
+              Última actualización: {new Date().toLocaleString("es-ES")}
+            </p>
+          </div>
+          {/* Selector de fecha */}
+          <div className="flex flex-col items-start sm:items-end gap-1">
+            <label className="text-blue-200 text-xs font-medium">
+              📅 Filtrar por día
+            </label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="px-3 py-2 rounded-lg bg-white/10 border border-white/30 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+            {selectedDate !== new Date().toISOString().split("T")[0] && (
+              <button
+                onClick={() =>
+                  setSelectedDate(new Date().toISOString().split("T")[0])
+                }
+                className="text-xs text-blue-300 hover:text-white underline"
+              >
+                Volver a hoy
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Resumen General - Fila 1: Usuarios y operaciones */}
@@ -187,9 +235,20 @@ export default function DashboardPage() {
 
       {/* Resumen Financiero - Fila 2 */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800 mb-3">
-          Resumen Financiero
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-gray-800">
+            Resumen Financiero
+          </h2>
+          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            📅{" "}
+            {new Date(selectedDate + "T00:00:00").toLocaleDateString("es-DO", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </span>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-green-500">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -219,8 +278,8 @@ export default function DashboardPage() {
             <p className="text-xs text-gray-400 mt-1">Retiros completados</p>
           </div>
 
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl shadow-sm border border-blue-200 border-l-4 border-l-blue-500">
+            <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
               Balance del Sistema
             </p>
             <p className="text-2xl font-bold text-blue-600 mt-2">
@@ -230,7 +289,9 @@ export default function DashboardPage() {
                 maximumFractionDigits: 2,
               })}
             </p>
-            <p className="text-xs text-gray-400 mt-1">Saldo en billeteras</p>
+            <p className="text-xs text-blue-400 mt-1">
+              ⚡ Acumulado en tiempo real
+            </p>
           </div>
 
           <div className="bg-gradient-to-br from-red-50 to-red-100 p-5 rounded-xl shadow-sm border border-red-200 border-l-4 border-l-red-500">

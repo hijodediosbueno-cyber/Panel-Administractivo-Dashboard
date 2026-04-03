@@ -85,6 +85,9 @@ export default function WalletsPage() {
   const [currentView, setCurrentView] = useState<"wallets" | "history">(
     "wallets",
   );
+  const [selectedDate, setSelectedDate] = useState<string>(
+    () => new Date().toISOString().split("T")[0],
+  );
 
   const loadPendingWithdrawals = async () => {
     try {
@@ -236,9 +239,13 @@ export default function WalletsPage() {
     }
   };
 
-  const loadTransactionHistory = async () => {
+  const loadTransactionHistory = async (dateStr: string) => {
+    const nextDay = new Date(dateStr + "T00:00:00");
+    nextDay.setDate(nextDay.getDate() + 1);
+    const nextDayStr = nextDay.toISOString().split("T")[0];
+
     try {
-      // 1. Cargar depósitos
+      // 1. Cargar depósitos del día
       const { data: depositsData, error: depositsError } = await supabaseAdmin
         .from("pending_deposits")
         .select(
@@ -260,13 +267,15 @@ export default function WalletsPage() {
         `,
         )
         .not("payment_method", "like", "RETIRO_%")
+        .gte("created_at", dateStr)
+        .lt("created_at", nextDayStr)
         .order("created_at", { ascending: false });
 
       if (depositsError) {
         console.error("Error loading deposits:", depositsError);
       }
 
-      // 2. Cargar retiros desde la tabla withdrawals
+      // 2. Cargar retiros del día desde la tabla withdrawals
       const { data: withdrawalsData, error: withdrawalsError } =
         await supabaseAdmin
           .from("withdrawals")
@@ -288,13 +297,15 @@ export default function WalletsPage() {
           )
         `,
           )
+          .gte("created_at", dateStr)
+          .lt("created_at", nextDayStr)
           .order("created_at", { ascending: false });
 
       if (withdrawalsError) {
         console.error("Error loading withdrawals:", withdrawalsError);
       }
 
-      // 3. Cargar otras transacciones (premios, reembolsos, etc)
+      // 3. Cargar otras transacciones del día (premios, reembolsos, etc)
       const { data: otherTransactionsData, error: otherTransactionsError } =
         await supabaseAdmin
           .from("transactions")
@@ -315,6 +326,8 @@ export default function WalletsPage() {
           )
         `,
           )
+          .gte("created_at", dateStr)
+          .lt("created_at", nextDayStr)
           .order("created_at", { ascending: false });
 
       if (otherTransactionsError) {
@@ -561,9 +574,9 @@ export default function WalletsPage() {
 
   useEffect(() => {
     if (currentView === "history") {
-      loadTransactionHistory();
+      loadTransactionHistory(selectedDate);
     }
-  }, [currentView]);
+  }, [currentView, selectedDate]);
 
   const parseUserNotes = (
     notes: string | null | undefined,
@@ -1023,9 +1036,36 @@ export default function WalletsPage() {
         // Vista de Historial de Transacciones
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Registro Completo de Transacciones
-            </h3>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Registro Completo de Transacciones
+              </h3>
+              {/* Selector de fecha para historial */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-600 whitespace-nowrap">
+                  📅 Día:
+                </label>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                {selectedDate !== new Date().toISOString().split("T")[0] && (
+                  <button
+                    onClick={() =>
+                      setSelectedDate(new Date().toISOString().split("T")[0])
+                    }
+                    className="text-xs text-blue-500 hover:text-blue-700 underline"
+                  >
+                    Hoy
+                  </button>
+                )}
+                <span className="text-xs text-gray-500">
+                  ({transactions.length} transacciones)
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="divide-y divide-gray-200">
