@@ -183,10 +183,16 @@ const BankTransferScreen = ({ navigation }) => {
               {BANKS.map((bank) => (
                 <TouchableOpacity
                   key={bank.id}
-                  style={[styles.bankCard, !bank.available && styles.bankCardDisabled]}
+                  style={[
+                    styles.bankCard,
+                    !bank.available && styles.bankCardDisabled,
+                  ]}
                   onPress={() => {
                     if (!bank.available) {
-                      Alert.alert("Próximamente", `${bank.name} estará disponible pronto.`);
+                      Alert.alert(
+                        "Próximamente",
+                        `${bank.name} estará disponible pronto.`,
+                      );
                       return;
                     }
                     setSelectedBank(bank);
@@ -198,19 +204,32 @@ const BankTransferScreen = ({ navigation }) => {
                   >
                     <Image
                       source={bank.logo}
-                      style={[styles.bankLogo, !bank.available && { opacity: 0.5 }]}
+                      style={[
+                        styles.bankLogo,
+                        !bank.available && { opacity: 0.5 },
+                      ]}
                       resizeMode="contain"
                     />
                     <View style={styles.bankInfo}>
                       <Text style={styles.bankName}>{bank.name}</Text>
                       <Text style={styles.bankSubtext}>
-                        {bank.available ? "Transferencia inmediata" : "Próximamente"}
+                        {bank.available
+                          ? "Transferencia inmediata"
+                          : "Próximamente"}
                       </Text>
                     </View>
                     {bank.available ? (
-                      <Ionicons name="chevron-forward" size={24} color="#ffffff" />
+                      <Ionicons
+                        name="chevron-forward"
+                        size={24}
+                        color="#ffffff"
+                      />
                     ) : (
-                      <Ionicons name="time-outline" size={24} color="rgba(255,255,255,0.6)" />
+                      <Ionicons
+                        name="time-outline"
+                        size={24}
+                        color="rgba(255,255,255,0.6)"
+                      />
                     )}
                   </LinearGradient>
                 </TouchableOpacity>

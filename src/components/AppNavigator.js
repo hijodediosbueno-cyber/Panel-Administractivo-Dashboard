@@ -57,7 +57,7 @@ const fadeTransition = {
     },
   },
   cardStyleInterpolator: ({ current }) => ({
-    cardStyle: { opacity: current.progress },
+    cardStyle: { opacity: current.progress, backgroundColor: "#f8fafc" },
   }),
 };
 
@@ -81,6 +81,7 @@ const AppNavigator = () => {
       screenOptions={{
         headerShown: false,
         ...fadeTransition,
+        cardStyle: { backgroundColor: "#f8fafc" },
       }}
     >
       <Stack.Screen name="Main" component={MainNavigator} />

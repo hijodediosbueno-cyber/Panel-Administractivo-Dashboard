@@ -31,7 +31,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 4,
+      "versionCode": 5,
       "package": "com.igf.football",
       "permissions": [
         "READ_EXTERNAL_STORAGE",

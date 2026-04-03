@@ -35,15 +35,33 @@ export const AuthProvider = ({ children }) => {
         if (mounted) {
           setSession(session);
           setUser(session?.user || null);
-          setUserProfile(
-            session?.user
-              ? {
+
+          if (session?.user) {
+            // Siempre consultar la BD para obtener el perfil real del usuario
+            try {
+              const { data: dbProfile } = await AuthService.getUserProfile(
+                session.user.id,
+              );
+              setUserProfile(
+                dbProfile || {
                   username: session.user.user_metadata?.username || "Usuario",
                   display_name:
                     session.user.user_metadata?.display_name || "Usuario",
-                }
-              : null,
-          );
+                  full_name:
+                    session.user.user_metadata?.display_name || "Usuario",
+                },
+              );
+            } catch {
+              setUserProfile({
+                username: session.user.user_metadata?.username || "Usuario",
+                display_name:
+                  session.user.user_metadata?.display_name || "Usuario",
+              });
+            }
+          } else {
+            setUserProfile(null);
+          }
+
           clearTimeout(safetyTimeout);
           setLoading(false);
         }

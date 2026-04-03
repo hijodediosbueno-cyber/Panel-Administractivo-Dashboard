@@ -421,21 +421,18 @@ const PaymentInstructionsScreen = ({ route, navigation }) => {
                   onPress: async () => {
                     const uploaded = await uploadScreenshot();
                     if (uploaded) {
-                      Alert.alert(
-                        "✅ Solicitud Enviada",
-                        "Tu pago está siendo verificado. Te notificaremos cuando sea aprobado (usualmente en menos de 30 minutos).",
-                        [
-                          {
-                            text: "Entendido",
-                            onPress: () => {
-                              navigation.reset({
-                                index: 0,
-                                routes: [{ name: "Main" }],
-                              });
-                            },
-                          },
-                        ],
-                      );
+                      // Navigate first, then show confirmation toast-style alert
+                      // to avoid nested-Alert black screen on Android
+                      navigation.reset({
+                        index: 0,
+                        routes: [{ name: "Main" }],
+                      });
+                      setTimeout(() => {
+                        Alert.alert(
+                          "✅ Solicitud Enviada",
+                          "Tu pago está siendo verificado. Te notificaremos cuando sea aprobado (usualmente en menos de 30 minutos).",
+                        );
+                      }, 400);
                     }
                   },
                 },
