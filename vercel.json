@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd IGF-Admin-Dashboard && npm run build",
+  "outputDirectory": "IGF-Admin-Dashboard/.next",
+  "installCommand": "cd IGF-Admin-Dashboard && npm install",
+  "framework": "nextjs"
+}
