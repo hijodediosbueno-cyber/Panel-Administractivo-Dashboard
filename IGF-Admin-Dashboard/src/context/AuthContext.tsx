@@ -9,8 +9,8 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
-const ADMIN_USER = "cdeinversiones95@gmail.com";
-const ADMIN_PASS = "Nileve07*";
+const ADMIN_USER = process.env.NEXT_PUBLIC_ADMIN_USER!;
+const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASS!;
 const AUTH_KEY = "igf_admin_auth";
 
 interface AuthContextType {

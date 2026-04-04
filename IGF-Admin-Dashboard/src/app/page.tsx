@@ -1,20 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
-
-// Configuración de Supabase
-const supabaseUrl = "https://rqbexzndnzzfbonafzop.supabase.co";
-const supabaseServiceKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxYmV4em5kbnp6ZmJvbmFmem9wIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTQ5MzMyNiwiZXhwIjoyMDc3MDY5MzI2fQ.wf7FOv5vV_PW8ejcPpDxok3mU2z331us23G34iMs2pQ";
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-});
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 // Helper: obtener el día siguiente en formato YYYY-MM-DD
 const getNextDay = (dateStr: string): string => {
@@ -182,7 +170,9 @@ export default function DashboardPage() {
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {stats?.totalUsers || 0}
                 </p>
-                <p className="text-xs text-blue-500 mt-1 group-hover:underline">Ver usuarios →</p>
+                <p className="text-xs text-blue-500 mt-1 group-hover:underline">
+                  Ver usuarios →
+                </p>
               </div>
               <div className="p-3 bg-blue-50 rounded-xl group-hover:bg-blue-500 transition-colors">
                 <svg
@@ -266,7 +256,9 @@ export default function DashboardPage() {
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-xs text-gray-400 mt-1 group-hover:text-green-500 group-hover:underline">Ver transacciones →</p>
+              <p className="text-xs text-gray-400 mt-1 group-hover:text-green-500 group-hover:underline">
+                Ver transacciones →
+              </p>
             </div>
           </Link>
 
@@ -282,7 +274,9 @@ export default function DashboardPage() {
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-xs text-gray-400 mt-1 group-hover:text-orange-500 group-hover:underline">Ver billeteras →</p>
+              <p className="text-xs text-gray-400 mt-1 group-hover:text-orange-500 group-hover:underline">
+                Ver billeteras →
+              </p>
             </div>
           </Link>
 
@@ -316,7 +310,9 @@ export default function DashboardPage() {
                   maximumFractionDigits: 2,
                 })}
               </p>
-              <p className="text-xs text-red-400 mt-1 group-hover:underline">Ver billeteras →</p>
+              <p className="text-xs text-red-400 mt-1 group-hover:underline">
+                Ver billeteras →
+              </p>
             </div>
           </Link>
         </div>

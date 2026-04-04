@@ -1,20 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { format } from "date-fns";
-
-// Configuración de Supabase
-const supabaseUrl = "https://rqbexzndnzzfbonafzop.supabase.co";
-const supabaseServiceKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxYmV4em5kbnp6ZmJvbmFmem9wIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTQ5MzMyNiwiZXhwIjoyMDc3MDY5MzI2fQ.wf7FOv5vV_PW8ejcPpDxok3mU2z331us23G34iMs2pQ";
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-});
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 interface User {
   id: string;
