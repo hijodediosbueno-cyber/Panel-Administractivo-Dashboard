@@ -48,7 +48,8 @@ const BankTransferScreen = ({ navigation }) => {
       color: "#ef4444",
       available: true,
       accountNumber: "4229702175",
-      accountHolder: "Marino",
+      accountHolder: "Marino De Oleo Mesa",
+      accountType: "Cuenta Corriente",
     },
     {
       id: 2,
@@ -140,6 +141,7 @@ const BankTransferScreen = ({ navigation }) => {
             bank_name: selectedBank.name,
             account_number: selectedBank.accountNumber || "Contactar soporte",
             account_holder: selectedBank.accountHolder || "CDE Inversiones",
+            account_type: selectedBank.accountType || "",
           },
         },
         depositId: data.id,
